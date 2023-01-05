@@ -5,12 +5,8 @@ import HamburgerIcon from "@components/atoms/HamburgerIcon";
 import * as colors from "@styles/colors";
 import Wallet from "@components/atoms/Wallet";
 import kaikasImageUrl from "@assets/image/kaikas.png";
-import walletImageUrl from "@assets/image/wallet.svg";
 import { toast } from "react-toastify";
 import useAuth from "@hooks/useAuth";
-import Caver from "caver-js";
-
-const caver = new Caver(window.klaytn);
 
 const Container = styled.header`
   width: 100%;
@@ -82,17 +78,6 @@ async function isKaikasAvailable() {
   return results.every((res) => res);
 }
 
-async function signWithKaikas() {
-  const caver = new Caver(klaytn);
-
-  try {
-    const signObj = await caver.klay.sign(
-      "message",
-      window.klaytn.selectedAddress
-    );
-  } catch (e) {}
-}
-
 function Header() {
   const { user, setUser } = useAuth();
   async function loginWithKaikas() {
@@ -120,7 +105,7 @@ function Header() {
   }
 
   function handleLogin() {
-    // loginWithKaikas();
+    loginWithKaikas();
   }
 
   async function handleDone() {
@@ -145,11 +130,8 @@ function Header() {
           <SearchIcon />
         </SearchIconWrapper>
       </SearchBarWrapper>
-      {/* <WalletBox onClick={user ? handleDone : handleLogin}>
-        {user ? <KaikasImage src={walletImageUrl} /> : <Wallet />}
-      </WalletBox> */}
-      <WalletBox onClick={signWithKaikas}>
-        <KaikasImage src={walletImageUrl} />
+      <WalletBox onClick={user ? handleDone : handleLogin}>
+        {user ? <KaikasImage src={kaikasImageUrl} /> : <Wallet />}
       </WalletBox>
       <GrayRoundBox>
         <HamburgerIcon />
