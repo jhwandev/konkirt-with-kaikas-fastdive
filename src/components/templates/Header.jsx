@@ -124,8 +124,9 @@ function Header() {
 
       return true;
     } catch (e) {
-      toast.warn(e);
-      toast.error("로그인 실패..! 다시 시도해주세요~^^");
+      toast.error("로그인 실패..! 다시 시도해주세요~^^", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       return;
     }
   }
@@ -148,7 +149,8 @@ function Header() {
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.klaytn.networkVersion) !== chainId) {
       toast.warn(
-        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.klaytn.networkVersion}`
+        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.klaytn.networkVersion}`,
+        { position: toast.POSITION.BOTTOM_CENTER }
       );
 
       setIsOpenLoadingModal(false);
@@ -250,7 +252,8 @@ function Header() {
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.ethereum.networkVersion) !== chainId) {
       toast.warn(
-        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.ethereum.networkVersion}`
+        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.ethereum.networkVersion}`,
+        { position: toast.POSITION.BOTTOM_CENTER }
       );
       setIsOpenLoadingModal(false);
       return;
