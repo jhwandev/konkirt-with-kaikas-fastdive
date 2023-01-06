@@ -100,7 +100,7 @@ function Header() {
   async function connectWithKaikas() {
     if (!klaytn) {
       toast.error("kaikas 설치 해주세요!", {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_CENTER,
       });
       return;
     }
@@ -110,19 +110,21 @@ function Header() {
     setIsOpenLoadingModal(true);
 
     try {
-      const accounts = await toast.promise(
+      await toast.promise(
         klaytn.enable(),
         {
           pending: "Kaikas 지갑 연동 중",
         },
+        { position: toast.POSITION.TOP_CENTER },
         { closeButton: true }
       );
-      toast.success("Connect Success [" + AccountSummary(accounts[0]) + "]");
+
       setIsOpenLoadingModal(false);
       setIsOpenModal(true);
 
       return true;
-    } catch {
+    } catch (e) {
+      toast.warn(e);
       toast.error("로그인 실패..! 다시 시도해주세요~^^");
       return;
     }
@@ -137,15 +139,18 @@ function Header() {
     setIsOpenLoadingModal(true);
 
     const caver = new Caver(window.klaytn);
-    const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38";
-    const chainId = "8217"; //klaytn Mainnet
+    // const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38";
+    const contractAddress = "0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313"; //testnet puu
+    // const contractAddress = "0x3e900f9bc1ba2691d5d4ee71189eb112b9a1ec68"; //hodldog
+    const chainId = "1001"; //klaytn Mainnet
     const message = "contract address : " + contractAddress;
 
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.klaytn.networkVersion) !== chainId) {
       toast.warn(
-        `네트워크를 클레이튼 메인넷 (8217) 으로 변경해주세요. 현재 network : ${window.klaytn.networkVersion}`
+        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.klaytn.networkVersion}`
       );
+
       setIsOpenLoadingModal(false);
       return;
     }
@@ -170,7 +175,10 @@ function Header() {
         "kaikas"
       );
     } catch (e) {
-      toast.error("로그인 실패..! 다시 시도해주세요~^^");
+      toast.error("로그인 실패..! 다시 시도해주세요~^^", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+
       setIsOpenModal(true);
       setIsOpenLoadingModal(false);
       console.log(e);
@@ -210,15 +218,17 @@ function Header() {
     setIsOpenLoadingModal(true);
 
     try {
-      const accounts = await ethereum.request({
+      await ethereum.request({
         method: "eth_requestAccounts",
       });
-      toast.success("Connect Success [" + AccountSummary(accounts[0]) + "]");
+
       setIsOpenLoadingModal(false);
       setIsOpenModal(true);
       return true;
     } catch (e) {
-      toast.error("로그인 실패..! 다시 시도해주세요~^^");
+      toast.error("로그인 실패..! 다시 시도해주세요~^^", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       return false;
     }
   }
@@ -231,14 +241,16 @@ function Header() {
     setIsOpenModal(false);
     setIsOpenLoadingModal(true);
 
-    const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38";
-    const chainId = "8217"; //klaytn Mainnet
+    const contractAddress = "0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313"; // 테스트용 NFT 1001
+    // const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38"; // 푸빌라 8217
+
+    const chainId = "1001"; //klaytn Mainnet
     const message = "contract address : " + contractAddress;
 
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.ethereum.networkVersion) !== chainId) {
       toast.warn(
-        `네트워크를 클레이튼 메인넷 (8217) 으로 변경해주세요. 현재 network : ${window.ethereum.networkVersion}`
+        `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.ethereum.networkVersion}`
       );
       setIsOpenLoadingModal(false);
       return;
@@ -268,10 +280,11 @@ function Header() {
         "metamask"
       );
     } catch (e) {
-      toast.error("로그인 실패..! 다시 시도해주세요~^^");
+      toast.error("로그인 실패..! 다시 시도해주세요~^^", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       setIsOpenModal(true);
       setIsOpenLoadingModal(false);
-      console.log(e);
       return;
     }
   }
@@ -301,14 +314,16 @@ function Header() {
     localStorage.removeItem("_user");
     localStorage.removeItem("_wallet");
     setIsOpenProfileModal(false);
-    toast.success("로그아웃 되었습니다");
+    toast.success("로그아웃 되었습니다", {
+      position: toast.POSITION.BOTTOM_CENTER,
+    });
   }
 
   /**
    * TODO : klip Login
    */
   async function loginWithKlip() {
-    toast.warn("Klip로그인 개발중");
+    toast.warn("Klip로그인 개발중", { position: toast.POSITION.BOTTOM_CENTER });
   }
 
   /**
@@ -330,7 +345,6 @@ function Header() {
    * @param {*} _contractAddress
    * @param {*} _chainId
    * @param {*} _walletType
-   * @param {*} _onlyBalance
    */
   async function verifyHolder(
     _signObj,
@@ -347,7 +361,7 @@ function Header() {
       },
     };
 
-    const url = "https://api.fast-dive.com/v1/nft/verifyHolder";
+    const url = "https://api.fast-dive.com/api/v1/nft/verifyHolder";
 
     const params = {
       sign: _signObj,
@@ -355,6 +369,7 @@ function Header() {
       contractAddress: _contractAddress,
       chainId: _chainId,
       walletType: _walletType,
+      // onlyBalance: true,
     };
 
     await axios
@@ -366,13 +381,15 @@ function Header() {
         //로그인 요청지갑과 복호화 한 지갑 확인
         if (_ownerAddress.toUpperCase() !== data.ownerAddress.toUpperCase()) {
           toast.error("지갑주소가 일치하지 않습니다.", {
-            position: toast.POSITION.TOP_CENTER,
+            position: toast.POSITION.BOTTOM_CENTER,
           });
           return;
         }
         // 조건만족시 로그인 처리
         if (data.balance > 0) {
-          toast.success(`로그인 완료 (balance : ${data.balance})`);
+          toast.success(`로그인 완료 (balance : ${data.balance})`, {
+            position: toast.POSITION.BOTTOM_CENTER,
+          });
           setUser({ account: _ownerAddress, wallet: _walletType });
           localStorage.setItem("_user", _ownerAddress);
           localStorage.setItem("_wallet", _walletType);
@@ -390,13 +407,13 @@ function Header() {
           toast.error(
             "해당지갑에 NFT를 보유하고 있지 않습니다. 지갑주소를 확인해주세요.",
             {
-              position: toast.POSITION.TOP_CENTER,
+              position: toast.POSITION.BOTTOM_CENTER,
             }
           );
         }
       })
       .catch(function (e) {
-        toast.error(`로그인 실패`);
+        toast.error(`로그인 실패`, { position: toast.POSITION.BOTTOM_CENTER });
         setIsOpenModal(true);
       });
   }

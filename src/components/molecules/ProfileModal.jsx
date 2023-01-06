@@ -1,4 +1,5 @@
 // material-ui core
+import { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { unstable_createMuiStrictModeTheme } from "@material-ui/core/styles";
@@ -57,6 +58,21 @@ const ButtonProfile = styled.button`
   cursor: pointer;
 `;
 
+const ButtonReveal = styled(ButtonProfile)`
+  background-color: RGB(51, 102, 254);
+  margin-top: 10px;
+
+  &:hover {
+    background-color: rgb(38, 67, 152);
+    opacity: 1;
+  }
+
+  &:disabled {
+    background-color: rgb(38, 67, 152);
+    opacity: 1;
+  }
+`;
+
 const ButtonLogout = styled(ButtonProfile)`
   border: 1px solid ${colors.bgSecondary};
   background-color: transparent;
@@ -82,11 +98,11 @@ const handleCopyClipBoard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
     toast.success("주소 복사 완료", {
-      position: toast.POSITION.TOP_CENTER,
+      position: toast.POSITION.BOTTOM_CENTER,
     });
   } catch (error) {
     toast.error("주소 복사 실패", {
-      position: toast.POSITION.TOP_CENTER,
+      position: toast.POSITION.BOTTOM_CENTER,
     });
   }
 };
@@ -116,11 +132,29 @@ export default function ProfileModal({
   user,
   isOpenModal,
   setIsOpenModal,
-  wallet,
   logout,
 }) {
   const classes = useStyles();
   const theme = unstable_createMuiStrictModeTheme();
+  const [isRevealOpen, setIsRevealOpen] = useState(false);
+  const revealButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpenModal) {
+      setIsRevealOpen(false);
+    }
+  }, [isOpenModal]);
+
+  function revealOpen() {
+    var result = window.confirm("이번달 혜택을 Claim 하시겠습니까?");
+    if (result) {
+      setIsRevealOpen(true);
+      toast.success("혜택 클레임 완료", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Dialog
@@ -158,17 +192,16 @@ export default function ProfileModal({
                 <WalletImageWrapper>
                   {/* imageUrl(NFT이미지)이 있을경우 아바타, 없을경우 지갑 이미지 표시 */}
                   {user.imageUrl ? (
-                    <img
-                      style={{ borderRadius: "50%" }}
-                      width="100%"
-                      src={user.imageUrl}
-                      alt="titleImage"
-                    ></img>
-                  ) : (
                     <>
-                      {user.imageUrl}
-                      {WalletImage(wallet)}
+                      <img
+                        style={{ borderRadius: "50%" }}
+                        width="100%"
+                        src={user.imageUrl}
+                        alt="img"
+                      ></img>
                     </>
+                  ) : (
+                    <>{WalletImage(user.wallet)}</>
                   )}
                 </WalletImageWrapper>
               </div>
@@ -210,6 +243,13 @@ export default function ProfileModal({
           >
             프로필 상세 보기
           </ButtonProfile>
+          <ButtonReveal
+            ref={revealButtonRef}
+            disabled={isRevealOpen}
+            onClick={revealOpen}
+          >
+            {isRevealOpen ? <>1424-2452-1235-5331</> : " 혜택 Claim"}
+          </ButtonReveal>
           <div style={{ marginTop: "10px" }}>
             <ButtonLogout onClick={logout}>지갑 연결 해제</ButtonLogout>
           </div>

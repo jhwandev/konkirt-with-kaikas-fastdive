@@ -24,7 +24,9 @@ function App() {
 
     const account = localStorage.getItem("_user");
     const wallet = localStorage.getItem("_wallet");
-    const imageUrl = localStorage.getItem("_imageUrl");
+    const imageUrl = localStorage.getItem("_imageUrl")
+      ? localStorage.getItem("_imageUrl")
+      : "";
 
     let currentAccount = "";
 
@@ -44,6 +46,7 @@ function App() {
 
     if (account === currentAccount) {
       setUser({ account: account, wallet: wallet, imageUrl: imageUrl });
+
       localStorage.setItem("_user", account);
       localStorage.setItem("_wallet", wallet);
       localStorage.setItem("_imageUrl", imageUrl);
