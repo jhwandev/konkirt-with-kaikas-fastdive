@@ -1,16 +1,16 @@
 # konkrit-with-login-fastdive
 
-url : https://konkrit-with-login-fastdive.vercel.app
+https://konkrit-with-login-fastdive.vercel.app
+<br/>NFT contractAddress (klaytn testnet baobab) : 0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313
 
-contractAddress : 0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313
+---
 
 기존 Connect기능에 Mui Dialog와 Fast-dive API를 이용한 NFT 로그인 기능 추가
 
 This project was bootstrapped with [Create React App]
 
-<img width="500" alt="스크린샷 2023-01-05 오후 3 39 45" src="https://user-images.githubusercontent.com/83529212/210717680-5b955c99-3b25-4a9d-abaf-cc5c4ef613e3.png">
-<img width="500" alt="스크린샷 2023-01-05 오후 3 38 38" src="https://user-images.githubusercontent.com/83529212/210717703-36a759b9-fc94-4a9e-bf33-f4094652aa5f.png">
-
+<img width="800" alt="스크린샷 2023-01-10 오전 2 43 43" src="https://user-images.githubusercontent.com/83529212/211373179-733483d6-76be-459c-9e32-ec9ede3979cb.png">
+<img width="800" alt="스크린샷 2023-01-10 오전 2 44 53" src="https://user-images.githubusercontent.com/83529212/211373196-ddf5f6e2-848e-4e88-bde1-d01c1c814ffb.png">
 
 
 ## Quick Start
