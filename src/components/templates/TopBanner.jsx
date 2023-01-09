@@ -67,6 +67,9 @@ const CheckButton = styled.button`
   font-weight: 700;
   font-size: 60px;
   border: 0ch;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0px 0px 10px 5px;
   cursor: pointer;
 `;
 
