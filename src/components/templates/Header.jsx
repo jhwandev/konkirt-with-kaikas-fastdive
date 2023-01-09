@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as colors from "@styles/colors";
 import useAuth from "@hooks/useAuth";
+import useTest from "@hooks/useTest";
 import axios from "axios";
 // atoms
 import Logo from "@components/atoms/Logo";
@@ -66,6 +67,7 @@ const SearchIconWrapper = styled.div`
 
 function Header() {
   const { user, setUser } = useAuth();
+  const { test, setTest } = useTest();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenLoadingModal, setIsOpenLoadingModal] = useState(false);
   const [isOpenProfileModal, setIsOpenProfileModal] = useState(false);
@@ -108,6 +110,9 @@ function Header() {
     setLoadingTitle("연결중...");
     setIsOpenModal(false);
     setIsOpenLoadingModal(true);
+
+    console.log(test);
+    setTest(test + 1);
 
     try {
       await toast.promise(
@@ -314,8 +319,8 @@ function Header() {
    */
   async function logout() {
     setUser("");
-    localStorage.removeItem("_user");
-    localStorage.removeItem("_wallet");
+    // localStorage.removeItem("_user");
+    // localStorage.removeItem("_wallet");
     setIsOpenProfileModal(false);
     toast.success("로그아웃 되었습니다", {
       position: toast.POSITION.BOTTOM_CENTER,
@@ -393,9 +398,10 @@ function Header() {
           toast.success(`로그인 완료 (balance : ${data.balance})`, {
             position: toast.POSITION.BOTTOM_CENTER,
           });
+          debugger;
           setUser({ account: _ownerAddress, wallet: _walletType });
-          localStorage.setItem("_user", _ownerAddress);
-          localStorage.setItem("_wallet", _walletType);
+          // localStorage.setItem("_user", _ownerAddress);
+          // localStorage.setItem("_wallet", _walletType);
 
           // 메타데이터 조회시 첫번째 NFT 이미지Url 저장
           if (data.onlyBalance === false && data.result[0].metadata.image) {
@@ -403,8 +409,9 @@ function Header() {
               account: _ownerAddress,
               wallet: _walletType,
               imageUrl: data.result[0].metadata.image,
+              result: data.result,
             });
-            localStorage.setItem("_imageUrl", data.result[0].metadata.image);
+            // localStorage.setItem("_imageUrl", data.result[0].metadata.image);
           }
         } else {
           toast.error(
@@ -480,6 +487,13 @@ function Header() {
           <SearchIcon />
         </SearchIconWrapper>
       </SearchBarWrapper>
+      {user ? (
+        <div style={{ color: "yellow" }}>
+          NFT 홀더인증 완료&nbsp;&nbsp;&nbsp;
+        </div>
+      ) : (
+        ""
+      )}
       <WalletBox
         user={user}
         handleDone={handleDone}
