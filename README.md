@@ -1,6 +1,7 @@
 # konkrit-with-login-fastdive
 
-url : https://konkrit-with-login-fastdive.vercel.app/
+url : https://konkrit-with-login-fastdive.vercel.app
+
 contractAddress : 0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313
 
 기존 Connect기능에 Mui Dialog와 Fast-dive API를 이용한 NFT 로그인 기능 추가
