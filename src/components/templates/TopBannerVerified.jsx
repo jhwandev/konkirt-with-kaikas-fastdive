@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import * as colors from "@styles/colors";
 import { useState } from "react";
-import { toast } from "react-toastify";
+
 const Container = styled.div`
   width: 100%;
   margin-top: 64px;
@@ -67,7 +67,7 @@ const CheckButton = styled.button`
   background-color: white;
   color: black;
   font-weight: 700;
-  font-size: 50px;
+  font-size: 70px;
   border: 0ch;
   cursor: pointer;
 `;
@@ -96,7 +96,7 @@ const TitleSpan = styled.span`
   font-weight: 700;
 `;
 
-function TopBanner(user) {
+function TopBannerVerified(user) {
   const [isCheck, setIsCheck] = useState(false);
   const [count, setCount] = useState(9);
   const [date, setDate] = useState("");
@@ -112,22 +112,57 @@ function TopBanner(user) {
           {" "}
           <DateArea>[NFT 홀더전용 이벤트]</DateArea>
         </CenterWrapper>
-
-        <CenterWrapper>
-          <CheckButton
-            // style={{ background: "black", color: "white" }}
-            onClick={() => {
-              toast.warn("NFT 로그인 후 참여 가능합니다.", {
-                position: toast.POSITION.TOP_CENTER,
-              });
-            }}
-            // disabled={isCheck}
-          >
-            NFT 홀더만 참여 가능합니다
-          </CheckButton>
-          {/* <DateArea> 완료 - {date}</DateArea> */}
-        </CenterWrapper>
-        <CenterWrapper> </CenterWrapper>
+        {isCheck ? (
+          <>
+            <CenterWrapper>
+              <CheckButton
+                style={{ background: "black", color: "white" }}
+                onClick={() => {
+                  // setIsCheck(false);
+                  // setCount(count - 1);
+                }}
+                disabled
+              >
+                출석완료
+              </CheckButton>
+              {/* <DateArea> 완료 - {date}</DateArea> */}
+            </CenterWrapper>
+            <CenterWrapper>
+              {" "}
+              <CheckArea style={{ marginTop: "10px" }}>
+                <TitleSpan style={{ color: "Blue" }}>{count}</TitleSpan>일째
+                출석중
+              </CheckArea>
+            </CenterWrapper>
+          </>
+        ) : (
+          <>
+            <CenterWrapper>
+              <CheckButton
+                onClick={() => {
+                  if (!window.confirm("출석체크 하시겠습니까?")) {
+                  } else {
+                    setIsCheck(true);
+                    setCount(count + 1);
+                    setDate(new Date().toLocaleString());
+                    alert(
+                      new Date().toLocaleString() +
+                        "\n출석체크가 완료되었습니다."
+                    );
+                  }
+                }}
+              >
+                출석체크
+              </CheckButton>
+            </CenterWrapper>
+            <CenterWrapper>
+              <CheckArea style={{ marginTop: "10px" }}>
+                <TitleSpan style={{ color: "red" }}>{count}</TitleSpan>일째
+                출석중
+              </CheckArea>
+            </CenterWrapper>
+          </>
+        )}
 
         <BannerOrderBox>NFT 홀더 이벤트</BannerOrderBox>
       </BannerWrapper>
@@ -135,4 +170,4 @@ function TopBanner(user) {
   );
 }
 
-export default TopBanner;
+export default TopBannerVerified;
