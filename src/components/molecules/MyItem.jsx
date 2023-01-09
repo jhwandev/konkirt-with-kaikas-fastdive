@@ -14,6 +14,9 @@ const CardImage = styled.img`
   object-fit: contain;
   vertical-align: middle;
   cursor: pointer;
+  :hover {
+    border: 10px solid yellow;
+  }
 `;
 
 const InfoBox = styled.div`
