@@ -3,7 +3,6 @@ import SectionTop from "@components/molecules/SectionTop";
 import MyItems from "@components/organisms/MyItems";
 
 function MyNfts({ user }) {
-  console.log(user);
   return (
     <SectionLayout>
       <SectionTop title="내가 보유한 NFT" showAll="아이템 전체보기" />

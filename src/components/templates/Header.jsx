@@ -67,7 +67,7 @@ const SearchIconWrapper = styled.div`
 
 function Header() {
   const { user, setUser } = useAuth();
-  const { test, setTest } = useTest();
+  // const { test, setTest } = useTest();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenLoadingModal, setIsOpenLoadingModal] = useState(false);
   const [isOpenProfileModal, setIsOpenProfileModal] = useState(false);
@@ -111,9 +111,6 @@ function Header() {
     setIsOpenModal(false);
     setIsOpenLoadingModal(true);
 
-    console.log(test);
-    setTest(test + 1);
-
     try {
       await toast.promise(
         klaytn.enable(),
@@ -145,11 +142,12 @@ function Header() {
     setIsOpenLoadingModal(true);
 
     const caver = new Caver(window.klaytn);
-    // const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38";
     const contractAddress = "0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313"; //testnet puu
-    // const contractAddress = "0x3e900f9bc1ba2691d5d4ee71189eb112b9a1ec68"; //hodldog
     const chainId = "1001"; //klaytn Mainnet
-    const message = "contract address : " + contractAddress;
+    const message =
+      "[ NFT HOLDER VERIFY ]  \n contract address : " +
+      contractAddress +
+      "\n\n Powered by fast-dive";
 
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.klaytn.networkVersion) !== chainId) {
@@ -157,7 +155,6 @@ function Header() {
         `네트워크를 바오밥 테스트넷 (1001) 으로 변경해주세요. 현재 network : ${window.klaytn.networkVersion}`,
         { position: toast.POSITION.BOTTOM_CENTER }
       );
-
       setIsOpenLoadingModal(false);
       return;
     }
@@ -172,15 +169,33 @@ function Header() {
         },
         { closeButton: true, position: toast.POSITION.TOP_CENTER }
       );
-      // 홀더인증 API (fastdive)
-      verifyHolder(
-        signObj,
-        message,
+
+      // fastdive API =======================================================
+      const apiKey = "12ad0db3-89e7-4589-9c79-3582b3042b88";
+      const result2 = await verifyHolder2(
+        apiKey, // API키
+        signObj, // 서명값
+        message, // 서명메세지
+        contractAddress, // NFT 컨트랙트주소
+        chainId, //체인아이디
+        "kaikas", //지갑종류
+        false // 보유개수만 조회할지 여부 (true일경우 개수만)
+      );
+
+      //조회결과
+      const data = result2.data.data;
+      console.log("조회결과 확인: " + data);
+      console.log("개수조회: " + data.balance);
+      // =====================================================================
+
+      //조회 후처리
+      setDataAfterVerifyHolder(
+        result2,
         window.klaytn.selectedAddress,
-        contractAddress,
-        window.klaytn.networkVersion,
         "kaikas"
       );
+
+      setIsOpenLoadingModal(false);
     } catch (e) {
       toast.error("로그인 실패..! 다시 시도해주세요~^^", {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -188,7 +203,6 @@ function Header() {
 
       setIsOpenModal(true);
       setIsOpenLoadingModal(false);
-      console.log(e);
       return;
     }
   }
@@ -251,8 +265,11 @@ function Header() {
     const contractAddress = "0x8fd2387871ACA7fA628643296Fd4f5Aae4c5c313"; // 테스트용 NFT 1001
     // const contractAddress = "0xd643bb39f81ff9079436f726d2ed27abc547cb38"; // 푸빌라 8217
 
-    const chainId = "1001"; //klaytn Mainnet
-    const message = "contract address : " + contractAddress;
+    const chainId = "1001"; //klaytn testnet
+    const message =
+      "[ NFT HOLDER VERIFY ]  \n contract address : " +
+      contractAddress +
+      "\n\n Powered by fast-dive";
 
     // 지갑 네트워크와 조회하려는 NFT의 네트워크가 같은지 체크
     if (String(window.ethereum.networkVersion) !== chainId) {
@@ -279,14 +296,33 @@ function Header() {
       );
 
       // 홀더인증 API (fastdive)
-      verifyHolder(
-        signObj,
-        message,
-        window.ethereum.selectedAddress,
-        contractAddress,
-        window.ethereum.networkVersion,
+
+      // fastdive API =======================================================
+      const apiKey = "12ad0db3-89e7-4589-9c79-3582b3042b88";
+      const result2 = await verifyHolder2(
+        apiKey, // API키
+        signObj, // 서명값
+        message, // 서명메세지
+        contractAddress, // NFT 컨트랙트주소
+        chainId, //체인아이디
+        "metamask", //지갑종류
+        false // 보유개수만 조회할지 여부 (true일경우 개수만)
+      );
+
+      //조회결과
+      const data = result2.data.data;
+      console.log("조회결과 확인: " + data);
+      console.log("개수조회: " + data.balance);
+      // =====================================================================
+
+      //조회 후처리
+      setDataAfterVerifyHolder(
+        result2,
+        window.klaytn.selectedAddress,
         "metamask"
       );
+
+      setIsOpenLoadingModal(false);
     } catch (e) {
       toast.error("로그인 실패..! 다시 시도해주세요~^^", {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -333,16 +369,6 @@ function Header() {
   async function loginWithKlip() {
     toast.warn("Klip로그인 개발중", { position: toast.POSITION.BOTTOM_CENTER });
   }
-
-  /**
-   * 계정주소 summary
-   * @param {string} account
-   * @returns
-   */
-  const AccountSummary = (account) => {
-    const accountSummary = account.slice(0, 4) + "..." + account.slice(38, 42);
-    return accountSummary;
-  };
 
   /**
    * fastdive API 호출 - verifyHolder
@@ -398,7 +424,7 @@ function Header() {
           toast.success(`로그인 완료 (balance : ${data.balance})`, {
             position: toast.POSITION.BOTTOM_CENTER,
           });
-          debugger;
+
           setUser({ account: _ownerAddress, wallet: _walletType });
           // localStorage.setItem("_user", _ownerAddress);
           // localStorage.setItem("_wallet", _walletType);
@@ -426,6 +452,90 @@ function Header() {
         toast.error(`로그인 실패`, { position: toast.POSITION.BOTTOM_CENTER });
         setIsOpenModal(true);
       });
+  }
+
+  /**
+   * verifyHolder 2
+   * @param {*} apiKey
+   * @param {*} signObj
+   * @param {*} message
+   * @param {*} contractAddress
+   * @param {*} chainId
+   * @param {*} walletType
+   * @param {*} onlyBalance
+   * @returns
+   */
+  async function verifyHolder2(
+    apiKey,
+    signObj,
+    message,
+    contractAddress,
+    chainId,
+    walletType,
+    onlyBalance
+  ) {
+    const header = {
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+      },
+    };
+
+    const url = "https://api.fast-dive.com/api/v1/nft/verifyHolder";
+
+    const params = {
+      sign: signObj,
+      signMessage: message,
+      contractAddress: contractAddress,
+      chainId: chainId,
+      walletType: walletType,
+      onlyBalance: onlyBalance,
+    };
+
+    return await axios.post(url, params, header);
+  }
+
+  /**
+   * nft verify Holder 후처리
+   * @param {*} result
+   * @param {*} ownerAddress
+   * @param {*} walletType
+   * @returns
+   */
+  function setDataAfterVerifyHolder(result, ownerAddress, walletType) {
+    const data = result.data.data;
+    //로그인 요청지갑과 복호화 한 지갑 확인
+    if (ownerAddress.toUpperCase() !== data.ownerAddress.toUpperCase()) {
+      toast.error("지갑주소가 일치하지 않습니다.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+      return;
+    }
+    // 조건만족시 로그인 처리
+    if (data.balance > 0) {
+      toast.success(`로그인 완료 (balance : ${data.balance})`, {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+
+      setUser({ account: ownerAddress, wallet: walletType });
+
+      // 메타데이터 조회시 첫번째 NFT 이미지Url 저장
+      if (data.onlyBalance === false && data.result[0].metadata.image) {
+        setUser({
+          account: ownerAddress,
+          wallet: walletType,
+          imageUrl: data.result[0].metadata.image,
+          result: data.result,
+        });
+      }
+    } else {
+      toast.error(
+        "해당지갑에 NFT를 보유하고 있지 않습니다. 지갑주소를 확인해주세요.",
+        {
+          position: toast.POSITION.BOTTOM_CENTER,
+        }
+      );
+    }
   }
 
   /**

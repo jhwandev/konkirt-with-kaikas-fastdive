@@ -38,7 +38,6 @@ const Title = styled.div`
   white-space: nowrap;
 `;
 export default function MyItem({ item }) {
-  console.log(item);
   return (
     <CardWrapper>
       <CardImage src={item.image}></CardImage>

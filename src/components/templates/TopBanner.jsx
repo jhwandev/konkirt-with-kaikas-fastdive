@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import * as colors from "@styles/colors";
-import { useState } from "react";
 import { toast } from "react-toastify";
 const Container = styled.div`
   width: 100%;
@@ -64,10 +63,9 @@ const ContentDiv = styled.div`
 
 const CheckButton = styled.button`
   display: flex;
-  background-color: white;
-  color: black;
+  margin-top: 20px;
   font-weight: 700;
-  font-size: 50px;
+  font-size: 60px;
   border: 0ch;
   cursor: pointer;
 `;
@@ -79,12 +77,6 @@ const DateArea = styled.div`
   font-weight: 800;
   font-size: 40px;
 `;
-const CheckArea = styled.div`
-  background-color: transparent;
-  color: black;
-  font-weight: 800;
-  font-size: 30px;
-`;
 
 const CenterWrapper = styled.div`
   display: flex;
@@ -92,15 +84,7 @@ const CenterWrapper = styled.div`
   align-items: center;
 `;
 
-const TitleSpan = styled.span`
-  font-weight: 700;
-`;
-
-function TopBanner(user) {
-  const [isCheck, setIsCheck] = useState(false);
-  const [count, setCount] = useState(9);
-  const [date, setDate] = useState("");
-
+function TopBanner() {
   return (
     <Container>
       <BannerWrapper>
@@ -123,7 +107,7 @@ function TopBanner(user) {
             }}
             // disabled={isCheck}
           >
-            NFT 홀더만 참여 가능합니다
+            NFT 로그인 후 참여 가능합니다
           </CheckButton>
           {/* <DateArea> 완료 - {date}</DateArea> */}
         </CenterWrapper>
