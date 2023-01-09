@@ -1,11 +1,13 @@
 import GlobalStyle from "./GlobalStyle";
 import Header from "@components/templates/Header";
 import TopBanner from "@components/templates/TopBanner";
+import TopBannerVerified from "@components/templates/TopBannerVerified";
 import Events from "@components/templates/Events";
 import ItemsOnSale from "@components/templates/ItemsOnSale";
 import OpenseaTopCollections from "@components/templates/OpenseaTopCollections";
 import OnBoarding from "@components/templates/OnBoarding";
 import Footer from "@components/templates/Footer";
+import MyNfts from "@components/templates/MyNfts";
 import { useEffect } from "react";
 
 import useAuth from "@hooks/useAuth";
@@ -16,42 +18,46 @@ const { klaytn, ethereum } = window;
 function App() {
   const { user, setUser } = useAuth();
 
-  useEffect(() => {
-    //kaikas 지갑 없을시 이 effect무효!
-    if (!klaytn) {
-      return;
-    }
+  // setTest(123);
+  // console.log(test);
+  // 새로고침시 자동 로그인 기능 제거
 
-    const account = localStorage.getItem("_user");
-    const wallet = localStorage.getItem("_wallet");
-    const imageUrl = localStorage.getItem("_imageUrl")
-      ? localStorage.getItem("_imageUrl")
-      : "";
+  // useEffect(() => {
+  //   //kaikas 지갑 없을시 이 effect무효!
+  //   if (!klaytn) {
+  //     return;
+  //   }
 
-    let currentAccount = "";
+  //   const account = localStorage.getItem("_user");
+  //   const wallet = localStorage.getItem("_wallet");
+  //   const imageUrl = localStorage.getItem("_imageUrl")
+  //     ? localStorage.getItem("_imageUrl")
+  //     : "";
 
-    if (wallet === "kaikas") {
-      currentAccount = klaytn?.selectedAddress;
-    } else if (wallet === "metamask") {
-      currentAccount = ethereum?.selectedAddress;
-    }
+  //   let currentAccount = "";
 
-    if (!account || !currentAccount) {
-      setUser("");
-      localStorage.removeItem("_user");
-      localStorage.removeItem("_wallet");
-      localStorage.removeItem("_imageUrl");
-      return;
-    }
+  //   if (wallet === "kaikas") {
+  //     currentAccount = klaytn?.selectedAddress;
+  //   } else if (wallet === "metamask") {
+  //     currentAccount = ethereum?.selectedAddress;
+  //   }
 
-    if (account === currentAccount) {
-      setUser({ account: account, wallet: wallet, imageUrl: imageUrl });
+  //   if (!account || !currentAccount) {
+  //     setUser("");
+  //     localStorage.removeItem("_user");
+  //     localStorage.removeItem("_wallet");
+  //     localStorage.removeItem("_imageUrl");
+  //     return;
+  //   }
 
-      localStorage.setItem("_user", account);
-      localStorage.setItem("_wallet", wallet);
-      localStorage.setItem("_imageUrl", imageUrl);
-    }
-  }, [setUser]);
+  //   if (account === currentAccount) {
+  //     setUser({ account: account, wallet: wallet, imageUrl: imageUrl });
+
+  //     localStorage.setItem("_user", account);
+  //     localStorage.setItem("_wallet", wallet);
+  //     localStorage.setItem("_imageUrl", imageUrl);
+  //   }
+  // }, [setUser]);
 
   useEffect(() => {
     const handleChangeAccounts = () => {
@@ -138,7 +144,13 @@ function App() {
     <>
       <GlobalStyle />
       <Header>헤더부분</Header>
-      <TopBanner>탑 배너</TopBanner>
+      {user ? (
+        <TopBannerVerified>탑 배너 홀더전용</TopBannerVerified>
+      ) : (
+        <TopBanner>탑 배너 일반</TopBanner>
+      )}
+      {user.result ? <MyNfts user={user}>MY NFT</MyNfts> : ""}
+      {user ? "" : <div style={{ marginTop: "50px" }}></div>}
       <Events />
       <ItemsOnSale>판매중인 아이템</ItemsOnSale>
       <OpenseaTopCollections>많이 거래된 컬렉션</OpenseaTopCollections>
