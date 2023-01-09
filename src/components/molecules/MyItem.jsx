@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import * as colors from "@styles/colors";
+import useAuth from "@hooks/useAuth";
 
 const CardWrapper = styled.div`
   border-radius: 16px;
@@ -12,6 +13,7 @@ const CardImage = styled.img`
   height: 150px;
   object-fit: contain;
   vertical-align: middle;
+  cursor: pointer;
 `;
 
 const InfoBox = styled.div`
@@ -37,10 +39,29 @@ const Title = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
 export default function MyItem({ item }) {
+  const { user, setUser } = useAuth();
+
+  /**
+   * image 선택
+   * @param {*} item
+   */
+  function selectImage(item) {
+    if (!window.confirm("프로필 사진을 변경 하시겠습니까?")) {
+    } else {
+      console.log(item);
+      setUser({ ...user, imageUrl: item.image });
+    }
+  }
   return (
     <CardWrapper>
-      <CardImage src={item.image}></CardImage>
+      <CardImage
+        onClick={() => {
+          selectImage(item);
+        }}
+        src={item.image}
+      ></CardImage>
       <InfoBox>
         <CollectionTitle>{item.attributes[0].value}</CollectionTitle>
         <Title>{item.name}</Title>

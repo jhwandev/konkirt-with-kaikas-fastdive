@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as colors from "@styles/colors";
 import useAuth from "@hooks/useAuth";
-import useTest from "@hooks/useTest";
 import axios from "axios";
 // atoms
 import Logo from "@components/atoms/Logo";
@@ -83,6 +82,18 @@ function Header() {
       document.querySelector("body").style.paddingRight = "";
     }
   }, [isOpenProfileModal]);
+
+  /**
+   * 프로필 사진 변경 감지 (myItem.jsx)
+   */
+  useEffect(() => {
+    if (user.imageUrl) {
+      toast.success("프로필사진이 변경되었습니다.", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+      setIsOpenProfileModal(true);
+    }
+  }, [user.imageUrl]);
 
   /**
    * 0. 카이카스 로그인 버튼
