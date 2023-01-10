@@ -71,6 +71,7 @@ function Header() {
   const [isOpenLoadingModal, setIsOpenLoadingModal] = useState(false);
   const [isOpenProfileModal, setIsOpenProfileModal] = useState(false);
   const [loadingTitle, setLoadingTitle] = useState("");
+  const [isFirst, setIsFirst] = useState(true);
   const { klaytn, ethereum } = window;
 
   /**
@@ -88,9 +89,13 @@ function Header() {
    */
   useEffect(() => {
     if (user.imageUrl) {
-      toast.success("프로필사진이 변경되었습니다.", {
-        position: toast.POSITION.BOTTOM_CENTER,
-      });
+      if (isFirst) {
+        setIsFirst(false);
+      } else {
+        toast.success("프로필사진이 변경되었습니다.", {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+      }
       setIsOpenProfileModal(true);
     }
   }, [user.imageUrl]);
@@ -369,6 +374,7 @@ function Header() {
     // localStorage.removeItem("_user");
     // localStorage.removeItem("_wallet");
     setIsOpenProfileModal(false);
+    setIsFirst(true);
     toast.success("로그아웃 되었습니다", {
       position: toast.POSITION.BOTTOM_CENTER,
     });
