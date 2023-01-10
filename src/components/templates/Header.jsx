@@ -334,7 +334,7 @@ function Header() {
       //조회 후처리
       setDataAfterVerifyHolder(
         result2,
-        window.klaytn.selectedAddress,
+        window.ethereum.selectedAddress,
         "metamask"
       );
 
@@ -523,6 +523,7 @@ function Header() {
     const data = result.data.data;
     //로그인 요청지갑과 복호화 한 지갑 확인
     if (ownerAddress.toUpperCase() !== data.ownerAddress.toUpperCase()) {
+      debugger;
       toast.error("지갑주소가 일치하지 않습니다.", {
         position: toast.POSITION.BOTTOM_CENTER,
       });
